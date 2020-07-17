@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import PostItem from './PostItem';
-import Button from './Button';
 
 class PostList extends Component {
 	constructor(props) {
 		console.log('A constructor');
 		super(props);
 		this.state = {
-			posts: [],
-			button: '1'
+			posts: []
 		};
 		this.timer = null;
 		this.handleVote = this.handleVote.bind(this); // ES6 class中，必须手动的绑定this的指向
-		// this.handleVote = () => this;
+		this.handleSave = this.handleSave.bind(this);
 	}
 	componentDidMount() {
 		console.log('A componentDidMount');
@@ -42,11 +40,6 @@ class PostList extends Component {
 				}]
 			});
 		}, 1000);
-		setTimeout(() => {
-			this.setState({
-				button: '2'
-			});
-		}, 1000);
 	}
 
 	componentWillUnmount() {
@@ -60,9 +53,19 @@ class PostList extends Component {
 	}
 
 	handleVote(id) {
-		console.log(111, this);
 		const posts = this.state.posts.map((item) => {
 			const newItem = item.id === id ? {...item, vote: ++item.vote} : item;
+			return newItem;
+		});
+		this.setState({
+			posts
+		});
+	}
+
+	handleSave(data) {
+		console.log(data);
+		const posts = this.state.posts.map((item) => {
+			const newItem = item.id == data.id ? {...data} : item;
 			return newItem;
 		});
 		this.setState({
@@ -75,17 +78,18 @@ class PostList extends Component {
 		return (
 			<div>
 				帖子列表
-				<Button button={this.state.button}></Button>
 				<ul>
 					{
 						this.state.posts.map((item, index) => {
-							return <PostItem post={item} onVote={this.handleVote} key={index}/>
+							return <PostItem post={item} onVote={this.handleVote} onSave={this.handleSave} key={index}/>
 						})
 					}
 				</ul>
 			</div>
 		);
 	}
+
+
 
 	componentDidUpdate() {
 		console.log('A4 componentDidUpdate');
